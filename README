@@ -1,7 +1,3 @@
-
-
----
-
 # 🏥 Rural Healthcare Access Solution – Nabha
 
 ## 📌 Problem Overview
@@ -10,9 +6,9 @@ Nabha and its surrounding rural areas face serious healthcare accessibility chal
 
 Patients from **173 villages** must travel long distances, often losing daily wages, only to face:
 
-* Unavailable specialists
-* Medicine stock shortages
-* Poor infrastructure (roads & sanitation)
+- Unavailable specialists  
+- Medicine stock shortages  
+- Poor infrastructure (roads & sanitation)  
 
 This results in **delayed treatment, worsening health conditions, and financial burden** on rural families.
 
@@ -27,33 +23,28 @@ To design a **scalable, low-bandwidth healthcare solution** that improves access
 ## 🚀 Proposed Solution
 
 ### 1. 📱 Multilingual Telemedicine App
-
-* Video & audio consultations with doctors
-* Support for regional languages
-* Low-bandwidth optimization
+- Video & audio consultations with doctors  
+- Support for regional languages  
+- Low-bandwidth optimization  
 
 ### 2. 📂 Offline Digital Health Records
-
-* Patient history stored locally
-* Syncs automatically when internet is available
-* Reduces dependency on physical records
+- Patient history stored locally  
+- Syncs automatically when internet is available  
+- Reduces dependency on physical records  
 
 ### 3. 💊 Real-Time Medicine Availability
-
-* Live updates from nearby pharmacies
-* Helps patients avoid unnecessary travel
-* Integration with local medical stores
+- Live updates from nearby pharmacies  
+- Helps patients avoid unnecessary travel  
+- Integration with local medical stores  
 
 ### 4. 🤖 AI-Powered Symptom Checker
-
-* Quick preliminary diagnosis
-* Works in low internet conditions
-* Guides patients on next steps
+- Quick preliminary diagnosis  
+- Works in low internet conditions  
+- Guides patients on next steps  
 
 ### 5. 🌍 Scalable Architecture
-
-* Designed to expand across rural India
-* Adaptable to other states and healthcare systems
+- Designed to expand across rural India  
+- Adaptable to other states and healthcare systems  
 
 ---
 
@@ -61,48 +52,48 @@ To design a **scalable, low-bandwidth healthcare solution** that improves access
 
 This solution aims to:
 
-* ✅ Reduce unnecessary travel for patients
-* ✅ Improve access to timely healthcare
-* ✅ Minimize income loss for daily-wage workers
-* ✅ Enhance efficiency of existing healthcare infrastructure
-* ✅ Strengthen rural health outcomes
+- ✅ Reduce unnecessary travel for patients  
+- ✅ Improve access to timely healthcare  
+- ✅ Minimize income loss for daily-wage workers  
+- ✅ Enhance efficiency of existing healthcare infrastructure  
+- ✅ Strengthen rural health outcomes  
 
 ---
 
 ## 👥 Stakeholders
 
-* Rural patients in Nabha and nearby villages
-* Civil Hospital staff
-* Punjab Health Department
-* Local pharmacies
-* Farmers and daily-wage workers
+- Rural patients in Nabha and nearby villages  
+- Civil Hospital staff  
+- Punjab Health Department  
+- Local pharmacies  
+- Farmers and daily-wage workers  
 
 ---
 
 ## 📊 Supporting Data
 
-* 🏥 Hospital operates with **11/23 doctors**
-* 🌐 Only **31% rural households** have internet access
-* 📈 Telemedicine in India growing at **31% CAGR (2020–2025)**
+- 🏥 Hospital operates with **11/23 doctors**  
+- 🌐 Only **31% rural households** have internet access  
+- 📈 Telemedicine in India growing at **31% CAGR (2020–2025)**  
 
 ---
 
 ## 🛠️ Tech Stack (Suggested)
 
-* **Frontend:** React / Flutter
-* **Backend:** Node.js / Django
-* **Database:** MongoDB / Firebase
-* **AI Module:** Python (ML models for symptom analysis)
-* **Offline Support:** Progressive Web App (PWA) / Local Storage
+- **Frontend:** React / Flutter  
+- **Backend:** Node.js / Django  
+- **Database:** MongoDB / Firebase  
+- **AI Module:** Python (ML models for symptom analysis)  
+- **Offline Support:** Progressive Web App (PWA) / Local Storage  
 
 ---
 
 ## 🔮 Future Enhancements
 
-* Integration with government health schemes
-* SMS-based alerts for non-smartphone users
-* Voice-based assistance for low literacy users
-* Ambulance tracking system
+- Integration with government health schemes  
+- SMS-based alerts for non-smartphone users  
+- Voice-based assistance for low literacy users  
+- Ambulance tracking system  
 
 ---
 
@@ -112,8 +103,14 @@ This project focuses on bridging the **urban-rural healthcare gap** by leveragin
 
 ---
 
-If you want, I can also create:
+## 🤝 Contributing
 
-* 📁 Folder structure for GitHub
-* ⚙️ Setup instructions section
-* 📸 UI screenshots section
+Contributions are welcome! Feel free to fork the repository and submit a pull request.
+
+---
+
+## 📄 License
+
+This project is open-source and available under the **MIT License**.
+
+---
