@@ -269,12 +269,3 @@ git commit -m "feat: add your feature"
 git push origin feature/your-feature
 ```
 
----
-
-## 📄 License
-
-MIT License © 2025 NabhaHealth Team
-
----
-
-> *"Healthcare is not a privilege — it's a right. NabhaHealth exists to make that right real for every village in Punjab."*
