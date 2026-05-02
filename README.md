@@ -4,7 +4,6 @@
 
 ![NabhaHealth Banner](https://img.shields.io/badge/NabhaHealth-Rural%20Telemedicine-00c896?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Prototype-ffb547?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
 ---
 
