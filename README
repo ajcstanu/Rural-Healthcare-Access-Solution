@@ -1,132 +1,119 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rural Healthcare Access – Nabha</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background: #f5f7fa;
-            color: #333;
-        }
-        header {
-            background: #2c7be5;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        section {
-            padding: 20px;
-            margin: 15px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        h2 {
-            color: #2c7be5;
-        }
-        ul {
-            padding-left: 20px;
-        }
-        footer {
-            text-align: center;
-            padding: 10px;
-            background: #2c7be5;
-            color: white;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
 
-<header>
-    <h1>🏥 Rural Healthcare Access Solution</h1>
-    <p>Nabha & Surrounding Rural Areas</p>
-</header>
 
-<section>
-    <h2>📌 Problem Overview</h2>
-    <p>
-        Nabha Civil Hospital operates at less than 50% capacity with only 11 doctors out of 23 sanctioned posts.
-        Patients from 173 villages travel long distances, often losing wages, only to find unavailable specialists
-        or medicine shortages. Poor infrastructure further worsens access.
-    </p>
-</section>
+---
 
-<section>
-    <h2>🎯 Objective</h2>
-    <p>
-        To build a scalable, low-bandwidth healthcare solution that improves access to medical services
-        for rural communities through digital innovation.
-    </p>
-</section>
+# 🏥 Rural Healthcare Access Solution – Nabha
 
-<section>
-    <h2>🚀 Proposed Solution</h2>
-    <ul>
-        <li><b>Multilingual Telemedicine App:</b> Video/audio consultations with doctors</li>
-        <li><b>Offline Health Records:</b> Accessible anytime with sync support</li>
-        <li><b>Medicine Availability Tracker:</b> Real-time updates from pharmacies</li>
-        <li><b>AI Symptom Checker:</b> Quick health guidance in low-bandwidth areas</li>
-        <li><b>Scalable System:</b> Expandable to other rural regions</li>
-    </ul>
-</section>
+## 📌 Problem Overview
 
-<section>
-    <h2>💡 Impact</h2>
-    <ul>
-        <li>Reduced unnecessary travel</li>
-        <li>Improved healthcare access</li>
-        <li>Less financial burden on workers</li>
-        <li>Better health outcomes</li>
-    </ul>
-</section>
+Nabha and its surrounding rural areas face serious healthcare accessibility challenges. The Civil Hospital operates at **less than 50% staff capacity**, with only **11 doctors available out of 23 sanctioned positions**.
 
-<section>
-    <h2>👥 Stakeholders</h2>
-    <ul>
-        <li>Rural patients</li>
-        <li>Civil Hospital staff</li>
-        <li>Punjab Health Department</li>
-        <li>Local pharmacies</li>
-        <li>Farmers & daily-wage workers</li>
-    </ul>
-</section>
+Patients from **173 villages** must travel long distances, often losing daily wages, only to face:
 
-<section>
-    <h2>📊 Supporting Data</h2>
-    <ul>
-        <li>11 out of 23 doctor positions filled</li>
-        <li>Only 31% rural households have internet access</li>
-        <li>Telemedicine growing at 31% CAGR in India</li>
-    </ul>
-</section>
+* Unavailable specialists
+* Medicine stock shortages
+* Poor infrastructure (roads & sanitation)
 
-<section>
-    <h2>🛠️ Tech Stack</h2>
-    <ul>
-        <li>Frontend: React / Flutter</li>
-        <li>Backend: Node.js / Django</li>
-        <li>Database: MongoDB / Firebase</li>
-        <li>AI: Python (ML models)</li>
-    </ul>
-</section>
+This results in **delayed treatment, worsening health conditions, and financial burden** on rural families.
 
-<section>
-    <h2>🔮 Future Enhancements</h2>
-    <ul>
-        <li>Government scheme integration</li>
-        <li>SMS alerts for non-smartphone users</li>
-        <li>Voice-based assistance</li>
-        <li>Ambulance tracking</li>
-    </ul>
-</section>
+---
 
-<footer>
-    <p>© 2026 Rural Healthcare Project | Designed for Social Impact</p>
-</footer>
+## 🎯 Project Objective
 
-</body>
-</html>
+To design a **scalable, low-bandwidth healthcare solution** that improves access to medical services for rural communities through digital innovation.
+
+---
+
+## 🚀 Proposed Solution
+
+### 1. 📱 Multilingual Telemedicine App
+
+* Video & audio consultations with doctors
+* Support for regional languages
+* Low-bandwidth optimization
+
+### 2. 📂 Offline Digital Health Records
+
+* Patient history stored locally
+* Syncs automatically when internet is available
+* Reduces dependency on physical records
+
+### 3. 💊 Real-Time Medicine Availability
+
+* Live updates from nearby pharmacies
+* Helps patients avoid unnecessary travel
+* Integration with local medical stores
+
+### 4. 🤖 AI-Powered Symptom Checker
+
+* Quick preliminary diagnosis
+* Works in low internet conditions
+* Guides patients on next steps
+
+### 5. 🌍 Scalable Architecture
+
+* Designed to expand across rural India
+* Adaptable to other states and healthcare systems
+
+---
+
+## 💡 Impact
+
+This solution aims to:
+
+* ✅ Reduce unnecessary travel for patients
+* ✅ Improve access to timely healthcare
+* ✅ Minimize income loss for daily-wage workers
+* ✅ Enhance efficiency of existing healthcare infrastructure
+* ✅ Strengthen rural health outcomes
+
+---
+
+## 👥 Stakeholders
+
+* Rural patients in Nabha and nearby villages
+* Civil Hospital staff
+* Punjab Health Department
+* Local pharmacies
+* Farmers and daily-wage workers
+
+---
+
+## 📊 Supporting Data
+
+* 🏥 Hospital operates with **11/23 doctors**
+* 🌐 Only **31% rural households** have internet access
+* 📈 Telemedicine in India growing at **31% CAGR (2020–2025)**
+
+---
+
+## 🛠️ Tech Stack (Suggested)
+
+* **Frontend:** React / Flutter
+* **Backend:** Node.js / Django
+* **Database:** MongoDB / Firebase
+* **AI Module:** Python (ML models for symptom analysis)
+* **Offline Support:** Progressive Web App (PWA) / Local Storage
+
+---
+
+## 🔮 Future Enhancements
+
+* Integration with government health schemes
+* SMS-based alerts for non-smartphone users
+* Voice-based assistance for low literacy users
+* Ambulance tracking system
+
+---
+
+## 📌 Conclusion
+
+This project focuses on bridging the **urban-rural healthcare gap** by leveraging technology tailored for **low-resource environments**. With the right implementation, it can significantly improve the quality of life for thousands of underserved individuals.
+
+---
+
+If you want, I can also create:
+
+* 📁 Folder structure for GitHub
+* ⚙️ Setup instructions section
+* 📸 UI screenshots section
