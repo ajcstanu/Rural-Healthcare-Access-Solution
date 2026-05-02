@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NabhaHealth – Rural Telemedicine Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --green: #00c896;
+      --green-dark: #009e76;
+      --green-glow: rgba(0,200,150,0.18);
+      --navy: #0a1628;
+      --navy2: #0f1e36;
+      --navy3: #162540;
+      --card: #111f35;
+      --card2: #162843;
+      --text: #e8f4f0;
+      --muted: #7a9ab5;
+      --accent: #ffb547;
+      --red: #ff5c6a;
+      --radius: 14px;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Sora', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      background: var(--navy);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE TEXTURE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 64px;
+      background: rgba(10,22,40,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,200,150,0.12);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; color: var(--green); letter-spacing: -0.5px; }
+    .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 var(--green-glow)} 50%{box-shadow:0 0 0 8px transparent} }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--green); }
+    .nav-lang { background: var(--card); border: 1px solid rgba(0,200,150,0.2); color: var(--green); padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+
+    /* ─── SECTIONS SHARED ─── */
+    section { position: relative; z-index: 1; }
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 100px 0 60px;
+      background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(0,200,150,0.08) 0%, transparent 70%),
+                  radial-gradient(ellipse 50% 40% at 10% 80%, rgba(255,181,71,0.05) 0%, transparent 60%);
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,200,150,0.1); border: 1px solid rgba(0,200,150,0.3);
+      border-radius: 20px; padding: 6px 14px; font-size: 0.75rem;
+      font-family: var(--mono); color: var(--green); letter-spacing: 1px;
+      margin-bottom: 24px; width: fit-content;
+    }
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 800; line-height: 1.08; letter-spacing: -2px;
+      margin-bottom: 20px;
+    }
+    h1 span { color: var(--green); }
+    .hero-sub {
+      font-size: 1.1rem; color: var(--muted); max-width: 560px;
+      line-height: 1.7; margin-bottom: 36px; font-weight: 400;
+    }
+    .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--green); color: var(--navy); font-weight: 700;
+      padding: 14px 28px; border-radius: var(--radius); border: none;
+      font-family: var(--sans); font-size: 0.92rem; cursor: pointer;
+      transition: all 0.2s; letter-spacing: 0.3px;
+    }
+    .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,200,150,0.3); }
+    .btn-outline {
+      background: transparent; color: var(--text); font-weight: 600;
+      padding: 14px 28px; border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,0.15); font-family: var(--sans);
+      font-size: 0.92rem; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--green); color: var(--green); }
+    .hero-stats {
+      display: flex; gap: 40px; margin-top: 60px; flex-wrap: wrap;
+    }
+    .stat { display: flex; flex-direction: column; gap: 4px; }
+    .stat-num { font-size: 2rem; font-weight: 800; color: var(--green); letter-spacing: -1px; }
+    .stat-label { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.5px; }
+
+    /* ─── FEATURES GRID ─── */
+    #features { padding: 100px 0; }
+    .section-label {
+      font-family: var(--mono); font-size: 0.72rem; letter-spacing: 2px;
+      color: var(--green); text-transform: uppercase; margin-bottom: 12px;
+    }
+    h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -1px; margin-bottom: 16px; }
+    .section-sub { color: var(--muted); font-size: 1rem; max-width: 500px; line-height: 1.7; margin-bottom: 60px; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .feat-card {
+      background: var(--card); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius); padding: 28px;
+      transition: all 0.25s; position: relative; overflow: hidden;
+    }
+    .feat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .feat-card:hover { border-color: rgba(0,200,150,0.3); transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
+    .feat-card:hover::before { opacity: 1; }
+    .feat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 18px; }
+    .feat-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
+    .feat-card p { color: var(--muted); font-size: 0.86rem; line-height: 1.65; }
+    .feat-badge { display: inline-block; margin-top: 14px; font-size: 0.7rem; font-family: var(--mono); color: var(--green); background: rgba(0,200,150,0.1); border-radius: 4px; padding: 3px 8px; }
+
+    /* ─── TELEMEDICINE DEMO ─── */
+    #consult { padding: 80px 0; }
+    .consult-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+    .consult-panel { background: var(--card); border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; overflow: hidden; }
+    .panel-head { background: var(--card2); padding: 18px 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .panel-head-title { font-weight: 700; font-size: 0.9rem; }
+    .panel-head-sub { font-size: 0.75rem; color: var(--muted); }
+    .panel-body { padding: 24px; }
+    .live-badge { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; font-family: var(--mono); color: var(--red); background: rgba(255,92,106,0.1); border-radius: 4px; padding: 4px 8px; }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red); animation: pulse 1.5s ease infinite; }
+
+    /* Video consultation mock */
+    .video-mock {
+      background: var(--navy); border-radius: 12px; height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 10px; margin-bottom: 16px;
+      border: 1px solid rgba(0,200,150,0.1); position: relative;
+    }
+    .video-avatar { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--green-dark), var(--green)); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+    .video-name { font-size: 0.85rem; font-weight: 600; }
+    .video-status { font-size: 0.72rem; color: var(--green); font-family: var(--mono); }
+    .video-controls { display: flex; gap: 10px; margin-top: 6px; }
+    .vc-btn { padding: 8px 16px; border-radius: 8px; border: none; font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: var(--sans); }
+    .vc-btn.end { background: var(--red); color: #fff; }
+    .vc-btn.mute { background: var(--card2); color: var(--muted); }
+
+    /* Doctor schedule */
+    .doctor-list { display: flex; flex-direction: column; gap: 12px; }
+    .doctor-row {
+      display: flex; align-items: center; gap: 14px; padding: 14px;
+      background: var(--navy); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);
+      transition: border-color 0.2s; cursor: pointer;
+    }
+    .doctor-row:hover { border-color: rgba(0,200,150,0.3); }
+    .doc-avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    .doc-info { flex: 1; }
+    .doc-name { font-size: 0.88rem; font-weight: 600; }
+    .doc-spec { font-size: 0.74rem; color: var(--muted); }
+    .doc-avail { font-size: 0.72rem; font-family: var(--mono); }
+    .avail-yes { color: var(--green); }
+    .avail-no { color: var(--muted); }
+    .book-btn { background: var(--green); color: var(--navy); border: none; border-radius: 7px; padding: 7px 14px; font-size: 0.75rem; font-weight: 700; cursor: pointer; font-family: var(--sans); }
+    .book-btn:disabled { background: var(--card2); color: var(--muted); cursor: not-allowed; }
+
+    /* ─── SYMPTOM CHECKER ─── */
+    #symptom { padding: 80px 0; }
+    .symptom-wrap { max-width: 700px; margin: 0 auto; }
+    .chat-window {
+      background: var(--card); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px; overflow: hidden; margin-top: 40px;
+    }
+    .chat-head { background: var(--card2); padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; }
+    .chat-messages { height: 320px; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(0,200,150,0.3); border-radius: 4px; }
+    .msg { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 0.86rem; line-height: 1.55; }
+    .msg.bot { background: var(--card2); color: var(--text); border-radius: 4px 12px 12px 12px; align-self: flex-start; }
+    .msg.user { background: var(--green); color: var(--navy); font-weight: 600; border-radius: 12px 4px 12px 12px; align-self: flex-end; }
+    .msg.typing { color: var(--muted); font-style: italic; }
+    .chat-input-row { display: flex; gap: 10px; padding: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .chat-input {
+      flex: 1; background: var(--navy); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 12px 16px; color: var(--text);
+      font-family: var(--sans); font-size: 0.86rem; outline: none;
+    }
+    .chat-input:focus { border-color: var(--green); }
+    .chat-send { background: var(--green); color: var(--navy); border: none; border-radius: 10px; padding: 12px 18px; font-weight: 700; cursor: pointer; font-family: var(--sans); font-size: 0.86rem; transition: background 0.2s; }
+    .chat-send:hover { background: var(--green-dark); }
+    .lang-row { display: flex; gap: 8px; padding: 12px 16px 0; flex-wrap: wrap; }
+    .lang-chip {
+      padding: 5px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.12); color: var(--muted); cursor: pointer;
+      transition: all 0.2s; background: transparent;
+    }
+    .lang-chip.active { background: rgba(0,200,150,0.15); border-color: var(--green); color: var(--green); }
+
+    /* ─── MEDICINE TRACKER ─── */
+    #medicine { padding: 80px 0; }
+    .med-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 32px; margin-top: 48px; align-items: start; }
+    .pharmacy-list { display: flex; flex-direction: column; gap: 10px; }
+    .pharm-card {
+      background: var(--card); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px; padding: 16px 20px; cursor: pointer; transition: all 0.2s;
+    }
+    .pharm-card:hover, .pharm-card.selected { border-color: var(--green); background: var(--card2); }
+    .pharm-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+    .pharm-dist { font-size: 0.76rem; color: var(--muted); }
+    .med-search { display: flex; gap: 10px; margin-bottom: 18px; }
+    .med-input {
+      flex: 1; background: var(--navy); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 12px 16px; color: var(--text);
+      font-family: var(--sans); font-size: 0.86rem; outline: none;
+    }
+    .med-input:focus { border-color: var(--green); }
+    .med-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    .med-table th { text-align: left; color: var(--muted); font-size: 0.72rem; letter-spacing: 0.8px; padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.07); font-family: var(--mono); }
+    .med-table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .stock-yes { color: var(--green); font-weight: 600; }
+    .stock-no { color: var(--red); }
+    .stock-low { color: var(--accent); }
+
+    /* ─── HEALTH RECORDS ─── */
+    #records { padding: 80px 0; }
+    .records-wrap { display: grid; grid-template-columns: 260px 1fr; gap: 28px; margin-top: 48px; }
+    .records-sidebar { display: flex; flex-direction: column; gap: 10px; }
+    .record-link {
+      display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+      border-radius: 10px; cursor: pointer; transition: all 0.2s;
+      border: 1px solid transparent; font-size: 0.86rem; color: var(--muted);
+    }
+    .record-link:hover, .record-link.active { background: var(--card); border-color: rgba(0,200,150,0.25); color: var(--text); }
+    .record-link.active .rec-icon { color: var(--green); }
+    .rec-icon { font-size: 1.1rem; }
+    .record-panel { background: var(--card); border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 28px; }
+    .record-panel h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .record-panel .rp-sub { font-size: 0.78rem; color: var(--muted); margin-bottom: 24px; }
+    .vitals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+    .vital-card { background: var(--navy); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.05); }
+    .vital-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 8px; font-family: var(--mono); }
+    .vital-val { font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; }
+    .vital-unit { font-size: 0.7rem; color: var(--muted); }
+    .vital-normal { color: var(--green); }
+    .vital-warn { color: var(--accent); }
+    .offline-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,200,150,0.1); border: 1px solid rgba(0,200,150,0.25); border-radius: 6px; padding: 6px 12px; font-size: 0.74rem; font-family: var(--mono); color: var(--green); margin-bottom: 20px; }
+    .history-list { display: flex; flex-direction: column; gap: 10px; }
+    .history-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px; background: var(--navy); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
+    .hist-date { font-size: 0.7rem; font-family: var(--mono); color: var(--muted); min-width: 72px; }
+    .hist-title { font-size: 0.86rem; font-weight: 600; }
+    .hist-doc { font-size: 0.74rem; color: var(--muted); }
+
+    /* ─── FOOTER ─── */
+    footer { padding: 60px 0 32px; border-top: 1px solid rgba(255,255,255,0.06); margin-top: 60px; }
+    .footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 48px; flex-wrap: wrap; gap: 32px; }
+    .footer-logo { font-size: 1.2rem; font-weight: 800; color: var(--green); letter-spacing: -0.5px; margin-bottom: 10px; }
+    .footer-desc { font-size: 0.82rem; color: var(--muted); max-width: 260px; line-height: 1.6; }
+    .footer-links h4 { font-size: 0.76rem; letter-spacing: 1px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; margin-bottom: 14px; }
+    .footer-links a { display: block; font-size: 0.84rem; color: var(--muted); text-decoration: none; margin-bottom: 8px; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--green); }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 0.76rem; color: var(--muted); flex-wrap: wrap; gap: 10px; }
+    .footer-bottom span { color: var(--green); }
+
+    /* ─── PROGRESS BAR ANIMATION ─── */
+    .progress-bar { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 1s ease; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 0 16px; }
+      .nav-links { display: none; }
+      .consult-wrap, .med-grid, .records-wrap { grid-template-columns: 1fr; }
+      .hero-stats { gap: 24px; }
+      .vitals-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ─── ENTER ANIMATIONS ─── */
+    .fade-in { opacity: 0; transform: translateY(24px); animation: fadeUp 0.7s ease forwards; }
+    @keyframes fadeUp { to { opacity: 1; transform: none; } }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.22s; }
+    .delay-3 { animation-delay: 0.34s; }
+    .delay-4 { animation-delay: 0.46s; }
+    .delay-5 { animation-delay: 0.58s; }
+
+    /* ─── ACTIVE NAV STATES ─── */
+    .nav-active { color: var(--green) !important; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo"><div class="logo-dot"></div>NabhaHealth</div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#consult">Consult</a>
+    <a href="#symptom">Symptom AI</a>
+    <a href="#medicine">Medicines</a>
+    <a href="#records">Records</a>
+    <button class="nav-lang" onclick="cycleLanguage()">🌐 ਪੰਜਾਬੀ</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-tag fade-in">⚕ NABHA RURAL HEALTHCARE PLATFORM</div>
+    <h1 class="fade-in delay-1">Healthcare that<br/><span>reaches your village</span></h1>
+    <p class="hero-sub fade-in delay-2">Connecting 173 villages around Nabha to qualified doctors, real-time medicine availability, and offline health records — even on 2G networks.</p>
+    <div class="hero-ctas fade-in delay-3">
+      <button class="btn-primary" onclick="scrollTo('consult')">📹 Book Consultation</button>
+      <button class="btn-outline" onclick="scrollTo('symptom')">🤖 Check Symptoms</button>
+    </div>
+    <div class="hero-stats fade-in delay-4">
+      <div class="stat"><div class="stat-num" id="cnt-villages">0</div><div class="stat-label">Villages Served</div></div>
+      <div class="stat"><div class="stat-num" id="cnt-consults">0</div><div class="stat-label">Consultations Done</div></div>
+      <div class="stat"><div class="stat-num" id="cnt-doctors">0</div><div class="stat-label">Active Doctors</div></div>
+      <div class="stat"><div class="stat-num" id="cnt-uptime">0%</div><div class="stat-label">Offline Uptime</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-label">Platform Features</div>
+    <h2>Built for rural India.<br/>Optimized for the last mile.</h2>
+    <p class="section-sub">Every feature is designed for low-bandwidth, multilingual users with limited tech literacy.</p>
+    <div class="features-grid">
+      <div class="feat-card fade-in">
+        <div class="feat-icon" style="background:rgba(0,200,150,0.12)">📹</div>
+        <h3>Video Telemedicine</h3>
+        <p>HD video consultations with doctors at Nabha Civil Hospital — adaptive streaming works on 2G connections without drops.</p>
+        <span class="feat-badge">WEBRTC + ADAPTIVE BITRATE</span>
+      </div>
+      <div class="feat-card fade-in delay-1">
+        <div class="feat-icon" style="background:rgba(255,181,71,0.12)">🌐</div>
+        <h3>Multilingual Interface</h3>
+        <p>Full support for Punjabi, Hindi, and English. AI-powered translation ensures no patient is left behind due to language barriers.</p>
+        <span class="feat-badge">ਪੰਜਾਬੀ · हिंदी · ENGLISH</span>
+      </div>
+      <div class="feat-card fade-in delay-2">
+        <div class="feat-icon" style="background:rgba(255,92,106,0.12)">📶</div>
+        <h3>Offline-First Records</h3>
+        <p>Complete health records sync and remain accessible offline via IndexedDB. No internet? Your records still work.</p>
+        <span class="feat-badge">PWA + SERVICE WORKERS</span>
+      </div>
+      <div class="feat-card fade-in delay-3">
+        <div class="feat-icon" style="background:rgba(0,200,150,0.12)">💊</div>
+        <h3>Medicine Availability</h3>
+        <p>Real-time stock data from local pharmacies — know what's available before travelling, and get notified when restocked.</p>
+        <span class="feat-badge">LIVE INVENTORY API</span>
+      </div>
+      <div class="feat-card fade-in delay-4">
+        <div class="feat-icon" style="background:rgba(255,181,71,0.12)">🤖</div>
+        <h3>AI Symptom Checker</h3>
+        <p>Lightweight AI model (<500KB) runs on-device. Triages symptoms, suggests urgency level, and recommends specialist type.</p>
+        <span class="feat-badge">ON-DEVICE INFERENCE</span>
+      </div>
+      <div class="feat-card fade-in delay-5">
+        <div class="feat-icon" style="background:rgba(255,92,106,0.12)">📊</div>
+        <h3>Doctor Dashboard</h3>
+        <p>Hospital staff get a live overview of queue, patient history, and prescription management — reducing admin burden by 60%.</p>
+        <span class="feat-badge">STAFF PORTAL</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONSULT -->
+<section id="consult">
+  <div class="container">
+    <div class="section-label">Video Consultation</div>
+    <h2>Book a Doctor — Right Now</h2>
+    <p class="section-sub">See real-time availability of specialists at Nabha Civil Hospital. No travel required.</p>
+    <div class="consult-wrap">
+      <!-- Active Call Mock -->
+      <div class="consult-panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-head-title">Live Consultation</div>
+            <div class="panel-head-sub">Raminder Singh · Patient #2847</div>
+          </div>
+          <div class="live-badge"><span class="live-dot"></span>LIVE</div>
+        </div>
+        <div class="panel-body">
+          <div class="video-mock">
+            <div class="video-avatar">👨‍⚕️</div>
+            <div class="video-name">Dr. Sukhwinder Kaur</div>
+            <div class="video-status">● General Physician · Connected</div>
+          </div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-family:var(--mono)">
+            ⏱ 08:43 elapsed &nbsp;·&nbsp; 📶 Signal: Good &nbsp;·&nbsp; 🔐 Encrypted
+          </div>
+          <div class="video-controls">
+            <button class="vc-btn mute">🔇 Mute</button>
+            <button class="vc-btn mute">📷 Camera</button>
+            <button class="vc-btn end">✕ End Call</button>
+          </div>
+          <div style="margin-top:16px;padding:12px;background:var(--navy);border-radius:8px;font-size:0.8rem;color:var(--muted);">
+            💬 Chat — <span style="color:var(--text)">Dr: Please share your previous prescription if available.</span>
+          </div>
+        </div>
+      </div>
+      <!-- Doctor List -->
+      <div class="consult-panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-head-title">Available Doctors</div>
+            <div class="panel-head-sub">Nabha Civil Hospital — Today</div>
+          </div>
+          <div style="font-size:0.74rem;font-family:var(--mono);color:var(--muted)">11/23 ON DUTY</div>
+        </div>
+        <div class="panel-body">
+          <div class="doctor-list" id="doctor-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SYMPTOM CHECKER -->
+<section id="symptom">
+  <div class="container">
+    <div class="section-label">AI Symptom Checker</div>
+    <h2>Describe what you feel.<br/>We'll help you understand.</h2>
+    <p class="section-sub">Low-bandwidth AI model — works on 2G. Available in Punjabi, Hindi, and English.</p>
+    <div class="symptom-wrap">
+      <div class="lang-row" id="lang-row">
+        <button class="lang-chip active" onclick="setLang('en', this)">English</button>
+        <button class="lang-chip" onclick="setLang('pa', this)">ਪੰਜਾਬੀ</button>
+        <button class="lang-chip" onclick="setLang('hi', this)">हिंदी</button>
+      </div>
+      <div class="chat-window">
+        <div class="chat-head">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:1.3rem">🤖</span>
+            <div>
+              <div style="font-size:0.9rem;font-weight:700">ArogyaBot</div>
+              <div style="font-size:0.72rem;color:var(--green);font-family:var(--mono)">● ON-DEVICE · OFFLINE CAPABLE</div>
+            </div>
+          </div>
+          <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono)">NOT A DIAGNOSIS</div>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="msg bot">Hello! I'm ArogyaBot. Please describe your symptoms and I'll help you understand the urgency and recommend next steps. 🙏</div>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chat-in" placeholder="Type your symptoms…" onkeydown="if(event.key==='Enter') sendMsg()"/>
+          <button class="chat-send" onclick="sendMsg()">Send →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEDICINE -->
+<section id="medicine">
+  <div class="container">
+    <div class="section-label">Medicine Availability</div>
+    <h2>Know before you go.</h2>
+    <p class="section-sub">Real-time stock status across pharmacies near Nabha — updated every 30 minutes.</p>
+    <div class="med-grid">
+      <div>
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;font-family:var(--mono)">SELECT PHARMACY</p>
+        <div class="pharmacy-list" id="pharm-list"></div>
+      </div>
+      <div>
+        <div class="med-search">
+          <input class="med-input" id="med-search" placeholder="Search medicine name…" oninput="filterMeds()"/>
+        </div>
+        <div style="background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;">
+          <table class="med-table">
+            <thead>
+              <tr><th>MEDICINE</th><th>CATEGORY</th><th>STATUS</th><th>QTY</th></tr>
+            </thead>
+            <tbody id="med-tbody"></tbody>
+          </table>
+        </div>
+        <div style="margin-top:12px;font-size:0.73rem;color:var(--muted);font-family:var(--mono)">
+          🔄 Last updated: <span id="update-time"></span> &nbsp;·&nbsp; 
+          <span style="color:var(--green)">●</span> In Stock &nbsp;
+          <span style="color:var(--accent)">●</span> Low &nbsp;
+          <span style="color:var(--red)">●</span> Out of Stock
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HEALTH RECORDS -->
+<section id="records">
+  <div class="container">
+    <div class="section-label">Digital Health Records</div>
+    <h2>Your history. Always with you.</h2>
+    <p class="section-sub">Encrypted, offline-ready health records — accessible anytime, anywhere.</p>
+    <div class="records-wrap">
+      <div class="records-sidebar">
+        <div class="record-link active" onclick="selectRecord('overview', this)"><span class="rec-icon">📊</span> Overview</div>
+        <div class="record-link" onclick="selectRecord('vitals', this)"><span class="rec-icon">❤️</span> Vitals</div>
+        <div class="record-link" onclick="selectRecord('history', this)"><span class="rec-icon">📋</span> Visit History</div>
+        <div class="record-link" onclick="selectRecord('prescriptions', this)"><span class="rec-icon">💊</span> Prescriptions</div>
+        <div class="record-link" onclick="selectRecord('reports', this)"><span class="rec-icon">🧪</span> Lab Reports</div>
+      </div>
+      <div class="record-panel" id="record-panel">
+        <!-- Overview (default) -->
+        <h3>Patient Overview</h3>
+        <div class="rp-sub">Gurpreet Singh · DOB: 12 Mar 1978 · Village: Dhoula</div>
+        <div class="offline-badge">📶 AVAILABLE OFFLINE · Last synced 2h ago</div>
+        <div class="vitals-grid">
+          <div class="vital-card"><div class="vital-label">BLOOD PRESSURE</div><div class="vital-val vital-warn">138<span class="vital-unit">/88</span></div><div class="vital-unit">mmHg · Slightly High</div></div>
+          <div class="vital-card"><div class="vital-label">BLOOD SUGAR</div><div class="vital-val vital-normal">95<span class="vital-unit"> mg/dL</span></div><div class="vital-unit">Normal</div></div>
+          <div class="vital-card"><div class="vital-label">BMI</div><div class="vital-val vital-warn">27.4</div><div class="vital-unit">Overweight</div></div>
+        </div>
+        <div style="font-size:0.85rem;font-weight:700;margin-bottom:12px;">Recent Activity</div>
+        <div class="history-list">
+          <div class="history-item"><div class="hist-date">Apr 28<br/>2025</div><div><div class="hist-title">Video Consultation</div><div class="hist-doc">Dr. Sukhwinder Kaur · General Physician</div></div></div>
+          <div class="history-item"><div class="hist-date">Mar 15<br/>2025</div><div><div class="hist-title">Blood Pressure Check</div><div class="hist-doc">Nabha Civil Hospital OPD</div></div></div>
+          <div class="history-item"><div class="hist-date">Jan 04<br/>2025</div><div><div class="hist-title">Prescription Renewal</div><div class="hist-doc">Dr. Harpreet Dhillon · Cardiologist</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">NabhaHealth</div>
+        <p class="footer-desc">Rural telemedicine for Nabha and 173 surrounding villages. Built for low-bandwidth, multilingual, and underserved communities.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Platform</h4>
+        <a href="#">Video Consult</a>
+        <a href="#">Symptom AI</a>
+        <a href="#">Medicine Tracker</a>
+        <a href="#">Health Records</a>
+      </div>
+      <div class="footer-links">
+        <h4>Stakeholders</h4>
+        <a href="#">Doctor Portal</a>
+        <a href="#">Hospital Admin</a>
+        <a href="#">Pharmacy Partner</a>
+        <a href="#">Punjab Health Dept</a>
+      </div>
+      <div class="footer-links">
+        <h4>Tech Stack</h4>
+        <a href="#">React Native (Mobile)</a>
+        <a href="#">Node.js / Express</a>
+        <a href="#">WebRTC Video</a>
+        <a href="#">PWA Offline Mode</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2025 NabhaHealth · Serving rural Punjab with dignity</div>
+      <div>Built for the <span>Smart India Hackathon</span></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ─── COUNTER ANIMATION ───
+function animateCount(id, target, suffix='', duration=1800) {
+  const el = document.getElementById(id);
+  let start = 0;
+  const step = target / (duration / 16);
+  const t = setInterval(() => {
+    start = Math.min(start + step, target);
+    el.textContent = Math.floor(start) + suffix;
+    if (start >= target) clearInterval(t);
+  }, 16);
+}
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    animateCount('cnt-villages', 173);
+    animateCount('cnt-consults', 1247);
+    animateCount('cnt-doctors', 11);
+    animateCount('cnt-uptime', 98, '%');
+  }, 600);
+});
+
+// ─── SMOOTH SCROLL ───
+function scrollTo(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+
+// ─── LANGUAGE CYCLE ───
+const langs = ['🌐 ਪੰਜਾਬੀ', '🌐 हिंदी', '🌐 English'];
+let langIdx = 0;
+function cycleLanguage() {
+  langIdx = (langIdx + 1) % langs.length;
+  document.querySelector('.nav-lang').textContent = langs[langIdx];
+}
+
+// ─── DOCTOR DATA ───
+const doctors = [
+  { name: 'Dr. Sukhwinder Kaur', spec: 'General Physician', emoji: '👩‍⚕️', available: true, bg: '#162540' },
+  { name: 'Dr. Harpreet Dhillon', spec: 'Cardiologist', emoji: '👨‍⚕️', available: true, bg: '#162540' },
+  { name: 'Dr. Manpreet Bains', spec: 'Gynaecologist', emoji: '👩‍⚕️', available: false, bg: '#162540' },
+  { name: 'Dr. Amarjit Singh', spec: 'Orthopaedic', emoji: '👨‍⚕️', available: false, bg: '#162540' },
+  { name: 'Dr. Navneet Gill', spec: 'Paediatrician', emoji: '👩‍⚕️', available: true, bg: '#162540' },
+];
+function renderDoctors() {
+  const list = document.getElementById('doctor-list');
+  list.innerHTML = doctors.map(d => `
+    <div class="doctor-row">
+      <div class="doc-avatar" style="background:rgba(0,200,150,0.12)">${d.emoji}</div>
+      <div class="doc-info">
+        <div class="doc-name">${d.name}</div>
+        <div class="doc-spec">${d.spec}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div class="doc-avail ${d.available ? 'avail-yes' : 'avail-no'}">${d.available ? '● Available' : '○ Busy'}</div>
+        <button class="book-btn" ${!d.available ? 'disabled' : ''} onclick="bookDoctor('${d.name}')">${d.available ? 'Book' : 'Unavail.'}</button>
+      </div>
+    </div>
+  `).join('');
+}
+function bookDoctor(name) {
+  alert(`✅ Appointment requested with ${name}.\nYou will receive a confirmation via SMS.`);
+}
+renderDoctors();
+
+// ─── LANGUAGE CHIPS ───
+function setLang(code, el) {
+  document.querySelectorAll('.lang-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const greetings = {
+    en: "Hello! I'm ArogyaBot. Please describe your symptoms and I'll help you understand the urgency and recommend next steps. 🙏",
+    pa: "ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ArogyaBot ਹਾਂ। ਕਿਰਪਾ ਆਪਣੇ ਲੱਛਣ ਦੱਸੋ। 🙏",
+    hi: "नमस्ते! मैं ArogyaBot हूँ। कृपया अपने लक्षण बताएं और मैं सहायता करूँगा। 🙏"
+  };
+  const msgs = document.getElementById('chat-messages');
+  msgs.innerHTML = `<div class="msg bot">${greetings[code]}</div>`;
+}
+
+// ─── SYMPTOM CHAT ───
+const responses = [
+  (s) => s.toLowerCase().includes('fever') ? { msg: '🌡️ Fever detected. Duration matters — if >3 days or >103°F, please consult immediately. Have you noticed any rash or body ache?', urgency: 'MODERATE' } : null,
+  (s) => s.toLowerCase().includes('chest') ? { msg: '⚠️ Chest pain or discomfort needs urgent evaluation. Please visit Nabha Civil Hospital or call 104 immediately. Do not ignore this symptom.', urgency: 'HIGH' } : null,
+  (s) => s.toLowerCase().includes('headache') ? { msg: '🤕 Headache can have many causes. Is it sudden and severe, or dull and recurring? Do you also feel nausea or sensitivity to light?', urgency: 'LOW' } : null,
+  (s) => s.toLowerCase().includes('cough') ? { msg: '🫁 Cough noted. If it has lasted >2 weeks with blood or weight loss, it requires urgent TB screening. Otherwise rest, fluids, and honey + ginger help.', urgency: 'MODERATE' } : null,
+  (s) => ({ msg: `I noted: "${s}". Based on this, I recommend consulting a General Physician. Would you like me to check doctor availability at Nabha Civil Hospital?`, urgency: 'LOW' }),
+];
+function sendMsg() {
+  const input = document.getElementById('chat-in');
+  const text = input.value.trim();
+  if (!text) return;
+  const msgs = document.getElementById('chat-messages');
+  msgs.innerHTML += `<div class="msg user">${text}</div>`;
+  input.value = '';
+  msgs.innerHTML += `<div class="msg bot typing">ArogyaBot is thinking…</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+  setTimeout(() => {
+    const typing = msgs.querySelector('.typing');
+    let resp = null;
+    for (const fn of responses) { resp = fn(text); if (resp) break; }
+    const urgencyColor = { HIGH: '#ff5c6a', MODERATE: '#ffb547', LOW: '#00c896' }[resp.urgency];
+    typing.classList.remove('typing');
+    typing.innerHTML = `${resp.msg}<br/><br/><span style="font-size:0.72rem;font-family:var(--mono);color:${urgencyColor}">⬤ URGENCY: ${resp.urgency}</span>`;
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 1200);
+}
+
+// ─── MEDICINE DATA ───
+const pharmacies = [
+  { name: 'Nabha Civil Hospital Pharmacy', dist: '0.3 km · Government' },
+  { name: 'Ram Dass Medical Store', dist: '1.2 km · Private' },
+  { name: 'Guru Nanak Pharmacy', dist: '2.1 km · Private' },
+];
+const medicines = [
+  { name: 'Metformin 500mg', cat: 'Diabetes', status: 'in', qty: 240 },
+  { name: 'Amlodipine 5mg', cat: 'Cardiac', status: 'in', qty: 180 },
+  { name: 'Paracetamol 500mg', cat: 'Analgesic', status: 'in', qty: 512 },
+  { name: 'Amoxicillin 250mg', cat: 'Antibiotic', status: 'low', qty: 18 },
+  { name: 'Atorvastatin 10mg', cat: 'Cardiac', status: 'out', qty: 0 },
+  { name: 'Omeprazole 20mg', cat: 'GI', status: 'in', qty: 320 },
+  { name: 'Losartan 50mg', cat: 'Hypertension', status: 'low', qty: 22 },
+  { name: 'Insulin (Vial)', cat: 'Diabetes', status: 'out', qty: 0 },
+  { name: 'Cetirizine 10mg', cat: 'Allergy', status: 'in', qty: 400 },
+  { name: 'Azithromycin 500mg', cat: 'Antibiotic', status: 'low', qty: 9 },
+];
+let selectedPharm = 0;
+function renderPharmacies() {
+  const list = document.getElementById('pharm-list');
+  list.innerHTML = pharmacies.map((p, i) => `
+    <div class="pharm-card ${i === selectedPharm ? 'selected' : ''}" onclick="selectPharm(${i})">
+      <div class="pharm-name">🏥 ${p.name}</div>
+      <div class="pharm-dist">📍 ${p.dist}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${[85,62,48][i]}%"></div></div>
+      <div style="font-size:0.7rem;color:var(--muted);margin-top:6px;font-family:var(--mono)">${[85,62,48][i]}% IN STOCK</div>
+    </div>
+  `).join('');
+}
+function selectPharm(i) { selectedPharm = i; renderPharmacies(); filterMeds(); }
+function filterMeds() {
+  const q = document.getElementById('med-search').value.toLowerCase();
+  const tbody = document.getElementById('med-tbody');
+  const filtered = medicines.filter(m => m.name.toLowerCase().includes(q) || m.cat.toLowerCase().includes(q));
+  tbody.innerHTML = filtered.map(m => {
+    const s = m.status;
+    const sc = s === 'in' ? 'stock-yes' : s === 'low' ? 'stock-low' : 'stock-no';
+    const sl = s === 'in' ? '● In Stock' : s === 'low' ? '▲ Low Stock' : '✕ Out';
+    return `<tr>
+      <td style="font-weight:600;font-size:0.84rem">${m.name}</td>
+      <td style="color:var(--muted);font-size:0.78rem">${m.cat}</td>
+      <td class="${sc}">${sl}</td>
+      <td style="font-family:var(--mono);font-size:0.78rem;color:var(--muted)">${m.qty > 0 ? m.qty : '—'}</td>
+    </tr>`;
+  }).join('');
+}
+renderPharmacies();
+filterMeds();
+document.getElementById('update-time').textContent = new Date().toLocaleTimeString();
+
+// ─── HEALTH RECORDS ───
+const recordViews = {
+  overview: `
+    <h3>Patient Overview</h3>
+    <div class="rp-sub">Gurpreet Singh · DOB: 12 Mar 1978 · Village: Dhoula</div>
+    <div class="offline-badge">📶 AVAILABLE OFFLINE · Last synced 2h ago</div>
+    <div class="vitals-grid">
+      <div class="vital-card"><div class="vital-label">BLOOD PRESSURE</div><div class="vital-val vital-warn">138<span class="vital-unit">/88</span></div><div class="vital-unit">mmHg · Slightly High</div></div>
+      <div class="vital-card"><div class="vital-label">BLOOD SUGAR</div><div class="vital-val vital-normal">95<span class="vital-unit"> mg/dL</span></div><div class="vital-unit">Normal</div></div>
+      <div class="vital-card"><div class="vital-label">BMI</div><div class="vital-val vital-warn">27.4</div><div class="vital-unit">Overweight</div></div>
+    </div>
+    <div style="font-size:0.85rem;font-weight:700;margin-bottom:12px;">Recent Activity</div>
+    <div class="history-list">
+      <div class="history-item"><div class="hist-date">Apr 28<br/>2025</div><div><div class="hist-title">Video Consultation</div><div class="hist-doc">Dr. Sukhwinder Kaur · General Physician</div></div></div>
+      <div class="history-item"><div class="hist-date">Mar 15<br/>2025</div><div><div class="hist-title">Blood Pressure Check</div><div class="hist-doc">Nabha Civil Hospital OPD</div></div></div>
+    </div>`,
+  vitals: `
+    <h3>Vitals History</h3><div class="rp-sub">Last 6 months trend</div>
+    <div class="offline-badge">📶 AVAILABLE OFFLINE</div>
+    <div class="vitals-grid">
+      <div class="vital-card"><div class="vital-label">HEART RATE</div><div class="vital-val vital-normal">74<span class="vital-unit"> bpm</span></div></div>
+      <div class="vital-card"><div class="vital-label">SpO₂</div><div class="vital-val vital-normal">98<span class="vital-unit">%</span></div></div>
+      <div class="vital-card"><div class="vital-label">WEIGHT</div><div class="vital-val vital-warn">78<span class="vital-unit"> kg</span></div></div>
+      <div class="vital-card"><div class="vital-label">TEMPERATURE</div><div class="vital-val vital-normal">98.6<span class="vital-unit">°F</span></div></div>
+      <div class="vital-card"><div class="vital-label">CHOLESTEROL</div><div class="vital-val vital-warn">212<span class="vital-unit"> mg/dL</span></div></div>
+      <div class="vital-card"><div class="vital-label">HbA1c</div><div class="vital-val vital-normal">5.8<span class="vital-unit">%</span></div></div>
+    </div>`,
+  history: `
+    <h3>Visit History</h3><div class="rp-sub">All consultations and OPD visits</div>
+    <div class="offline-badge">📶 AVAILABLE OFFLINE</div>
+    <div class="history-list">
+      <div class="history-item"><div class="hist-date">Apr 28<br/>2025</div><div><div class="hist-title">Video Consultation</div><div class="hist-doc">Dr. Sukhwinder Kaur · Telemedicine</div></div></div>
+      <div class="history-item"><div class="hist-date">Mar 15<br/>2025</div><div><div class="hist-title">OPD Visit — BP Checkup</div><div class="hist-doc">Nabha Civil Hospital</div></div></div>
+      <div class="history-item"><div class="hist-date">Jan 04<br/>2025</div><div><div class="hist-title">Prescription Renewal</div><div class="hist-doc">Dr. Harpreet Dhillon · Cardiology</div></div></div>
+      <div class="history-item"><div class="hist-date">Oct 20<br/>2024</div><div><div class="hist-title">Diabetes Screening</div><div class="hist-doc">Nabha PHC Camp · Village Dhoula</div></div></div>
+    </div>`,
+  prescriptions: `
+    <h3>Active Prescriptions</h3><div class="rp-sub">Current medications</div>
+    <div class="offline-badge">📶 AVAILABLE OFFLINE</div>
+    <div class="history-list">
+      <div class="history-item"><div class="hist-date">💊</div><div><div class="hist-title">Amlodipine 5mg — 1x daily</div><div class="hist-doc">Prescribed Apr 28 · Dr. Kaur · Refill: May 28</div></div></div>
+      <div class="history-item"><div class="hist-date">💊</div><div><div class="hist-title">Atorvastatin 10mg — 1x night</div><div class="hist-doc">Prescribed Jan 04 · Dr. Dhillon · Refill: Jul 04</div></div></div>
+    </div>`,
+  reports: `
+    <h3>Lab Reports</h3><div class="rp-sub">Uploaded diagnostic results</div>
+    <div class="offline-badge">📶 AVAILABLE OFFLINE</div>
+    <div class="history-list">
+      <div class="history-item"><div class="hist-date">🧪</div><div><div class="hist-title">Complete Blood Count (CBC)</div><div class="hist-doc">Mar 12, 2025 · Nabha Diagnostic Centre · Normal</div></div></div>
+      <div class="history-item"><div class="hist-date">🧪</div><div><div class="hist-title">Lipid Profile</div><div class="hist-doc">Jan 02, 2025 · PHC · Borderline High</div></div></div>
+      <div class="history-item"><div class="hist-date">🧪</div><div><div class="hist-title">HbA1c</div><div class="hist-doc">Jan 02, 2025 · PHC · 5.8% — Pre-diabetic watch</div></div></div>
+    </div>`
+};
+function selectRecord(key, el) {
+  document.querySelectorAll('.record-link').forEach(l => l.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('record-panel').innerHTML = recordViews[key];
+}
+</script>
+</body>
+</html>
