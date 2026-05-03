@@ -22,12 +22,12 @@ To design a **scalable, low-bandwidth healthcare solution** that improves access
 
 ## 🚀 Proposed Solution
 
-### 1. 📱 Multilingual Telemedicine App
+### 1.  Multilingual Telemedicine App
 - Video & audio consultations with doctors  
 - Support for regional languages  
 - Low-bandwidth optimization  
 
-### 2. 📂 Offline Digital Health Records
+### 2.  Offline Digital Health Records
 - Patient history stored locally  
 - Syncs automatically when internet is available  
 - Reduces dependency on physical records  
@@ -42,7 +42,7 @@ To design a **scalable, low-bandwidth healthcare solution** that improves access
 - Works in low internet conditions  
 - Guides patients on next steps  
 
-### 5. 🌍 Scalable Architecture
+### 5.  Scalable Architecture
 - Designed to expand across rural India  
 - Adaptable to other states and healthcare systems  
 
