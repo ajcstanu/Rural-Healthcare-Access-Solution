@@ -1,0 +1,60 @@
+{
+  "_intlayer_managed": true,
+  "_comment": "Source of truth for Intlayer. Run `npm run i18n:fill` to auto-translate pa.json and hi.json.",
+
+  "common": {
+    "appName": "NabhaHealth",
+    "tagline": "Your health, closer to home",
+    "loading": "Loading…",
+    "retry": "Try again",
+    "offline": "You are offline — showing cached data",
+    "language": "Language",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "search": "Search",
+    "errorGeneric": "Something went wrong. Please try again."
+  },
+
+  "consultation": {
+    "title": "Book a Consultation",
+    "availableDoctors": "Available Doctors",
+    "noDoctors": "No doctors available right now",
+    "bookSlot": "Book Slot",
+    "videoCall": "Start Video Call",
+    "waitingRoom": "You are in the waiting room ({{position}} in queue)",
+    "callEnded": "Your consultation has ended",
+    "prescriptionReady": "Your prescription is ready"
+  },
+
+  "medicines": {
+    "title": "Medicine Availability",
+    "searchPlaceholder": "Search medicine name…",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "lastUpdated": "Last updated {{time}} ago",
+    "pharmacy": "Pharmacy",
+    "distance": "{{km}} km away"
+  },
+
+  "records": {
+    "title": "My Health Records",
+    "noRecords": "No records found",
+    "addRecord": "Add Record",
+    "syncPending": "{{count}} record(s) pending sync",
+    "syncNow": "Sync Now",
+    "encrypted": "All records are encrypted"
+  },
+
+  "symptomChecker": {
+    "title": "Symptom Checker",
+    "inputPlaceholder": "Describe your symptoms…",
+    "analyze": "Analyze",
+    "urgencyHigh": "High urgency — please visit the hospital today",
+    "urgencyModerate": "Moderate — book a consultation within 2 days",
+    "urgencyLow": "Low — rest and monitor; consult if it worsens",
+    "specialist": "Recommended specialist: {{specialist}}",
+    "disclaimer": "This is an AI suggestion, not a medical diagnosis"
+  }
+}
