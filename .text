@@ -1,0 +1,44 @@
+static/index.html — Add 3 things
+Open nabhahealth/static/index.html and add these:
+A) Language switcher buttons in your nav (wherever your nav links are):
+html<div class="lang-switcher">
+  <button class="lang-btn" data-lang="en" onclick="switchLang('en')">EN</button>
+  <button class="lang-btn" data-lang="hi" onclick="switchLang('hi')">हि</button>
+  <button class="lang-btn" data-lang="pa" onclick="switchLang('pa')">ਪੰ</button>
+</div>
+B) Add data-i18n attributes to all static text elements, for example:
+html<!-- Before -->
+<a onclick="showPage('doctors')">Doctors</a>
+
+<!-- After -->
+<a onclick="showPage('doctors')" data-i18n="nav.doctors">Doctors</a>
+C) Add a <select> for language in the register form:
+html<select id="regLang">
+  <option value="en">English</option>
+  <option value="hi">हिंदी</option>
+  <option value="pa">ਪੰਜਾਬੀ</option>
+</select>
+
+------------------------------------------------------------------------------------------------------------
+
+
+
+. Create static/locales/ folder with 3 JSON files
+Create this folder structure:
+nabhahealth/static/locales/
+  ├── en.json
+  ├── hi.json
+  └── pa.json
+Each file maps dot-path keys to translated strings. Here's the shape — fill in Hindi/Punjabi translations:
+json// en.json
+{
+  "nav": { "home": "Home", "doctors": "Doctors", "appointments": "Appointments", "medicines": "Medicines", "pharmacy": "Pharmacy", "records": "Records" },
+  "auth": { "login": "Login", "register": "Register", "logout": "Logout", "welcome_back": "Welcome back", "welcome_new": "Welcome", "logged_out": "Logged out", "err_phone_pass": "Please enter phone and password.", "err_required": "Name, phone and password are required." },
+  "common": { "available": "Available", "busy": "Busy", "failed": "Failed to load." },
+  "doctors": { "loading": "Loading doctors...", "none_found": "No doctors found.", "all_specs": "All Specialisations", "book_btn": "Book Appointment", "not_available": "Not Available", "slots": "min slots,", "per_day": "/day", "login_to_book": "Please login to book an appointment." },
+  "appointments": { "loading": "Loading appointments...", "none_found": "No appointments found.", "book_title": "Book Appointment", "select_date_msg": "Select a date to see slots.", "loading_slots": "Loading slots...", "no_slots": "No slots available.", "err_select_slot": "Please select a slot.", "book_fail": "Booking failed.", "booked_success": "Appointment booked!", "cancel_btn": "Cancel", "cancel_confirm": "Cancel this appointment?", "cancel_success": "Appointment cancelled.", "cancel_fail": "Failed to cancel.", "video": "Video", "in_person": "In-person", "patient": "Patient", "booked": "Booked", "completed": "Completed", "cancelled": "Cancelled", "no_show": "No Show" },
+  "medicines": { "loading": "Loading medicines...", "none_found": "No medicines found.", "all": "All", "searching": "Searching...", "search_fail": "Search failed.", "out_of_stock": "Out of Stock", "col_name": "Name", "col_generic": "Generic", "col_category": "Category", "col_form": "Form", "col_rx": "Rx", "col_available": "Available At", "col_stock": "Stock" },
+  "pharmacy": { "loading": "Loading pharmacies...", "none_found": "No pharmacies found.", "view_map": "View on Map", "view_stock": "View Stock", "stock_loading": "Loading stock...", "stock_fail": "Failed to load stock.", "low_stock_msg": "items low on stock", "out_stock_msg": "items out of stock", "no_stock_data": "No stock data.", "col_medicine": "Medicine", "col_generic": "Generic", "col_qty": "Qty", "col_price": "Price", "col_status": "Status", "in_stock": "In Stock", "low_stock": "Low Stock", "out_of_stock": "Out of Stock" },
+  "symptom": { "err_add_one": "Add at least one symptom.", "analysing": "Analysing symptoms...", "err_failed": "Symptom check failed.", "triage_result": "Triage Result", "detected": "Detected Symptoms", "specialist": "Recommended Specialist", "advice": "Advice", "icd10": "ICD-10 Code", "red_flags": "Red Flags", "find_doctor": "Find a Doctor" },
+  "records": { "loading": "Loading records...", "fail": "Failed to load records.", "none_found": "No records found.", "diagnosis": "Diagnosis", "medications": "Medications" }
+}
