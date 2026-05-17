@@ -261,10 +261,6 @@ Install: `pip install -r requirements.txt`
 
 ---
 
-## 📄 License
-
-Built for rural healthcare access in Punjab, India.  
-Contact: admin@nabha.health
 
 ## 🤝 Contributing
 
