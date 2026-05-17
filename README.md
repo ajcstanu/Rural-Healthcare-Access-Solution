@@ -1,361 +1,271 @@
 # 🏥 NabhaHealth — Rural Telemedicine Platform
 
-> Connecting 173 villages around Nabha, Punjab to quality healthcare.  
-> Flask backend · SQLite · Plain HTML/CSS/JS frontend · Works on low-bandwidth connections.
+A lightweight telemedicine platform built for 173 villages around Nabha, Punjab.  
+Python/Flask backend · Plain HTML/CSS/JS frontend · SQLite database · Works on low-bandwidth connections.
 
 ---
 
-## Table of Contents
+## 🚀 Quick Start
 
-- [Overview](#overview)
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Demo Credentials](#demo-credentials)
-- [API Reference](#api-reference)
-- [Symptom Checker](#symptom-checker)
-- [Database Models](#database-models)
-- [Configuration](#configuration)
-- [Known Issues & Fixes](#known-issues--fixes)
-- [Tech Stack](#tech-stack)
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
 
----
+# 2. Run the server (auto-creates & seeds the database on first run)
+python app.py
+```
 
-## Overview
+Open **http://127.0.0.1:5000** in your browser.
 
-NabhaHealth is a telemedicine web application built for rural communities in Punjab, India. It allows patients from remote villages to find doctors, book appointments (video or in-person), check medicine availability at nearby pharmacies, and get an AI-assisted symptom triage — all in Hindi, Punjabi, or English.
-
-The backend is a modular Flask application. The frontend is a single-page app (`static/index.html`) served directly by Flask, requiring no separate build step or Node.js.
+> The database (`nabhahealth.db`) is created automatically on first run with seed doctors, pharmacies, medicines, and a test patient account.
 
 ---
 
-## Features
+## 🔑 Demo Credentials
+
+| Role    | Phone        | Password   |
+|---------|--------------|------------|
+| Patient | 9999999999   | patient123 |
+| Doctor  | 9000000001   | doctor123  |
+| Admin   | 9000000000   | admin123   |
+
+---
+
+## ✨ Features
 
 | Feature | Description |
 |---|---|
-| 🔐 Auth | JWT-based login & registration with bcrypt password hashing |
-| 👨‍⚕️ Doctor Directory | Browse doctors by specialisation, language, availability |
-| 📅 Appointment Booking | 15-minute slot grid (09:00–17:00), video or in-person mode |
-| 💊 Medicine Finder | Search by brand or generic name, see stock across all pharmacies |
-| 🏪 Pharmacy Stock | Per-pharmacy inventory with low-stock and out-of-stock alerts |
-| 🤒 AI Symptom Checker | Rule-based triage engine; supports Hindi/Punjabi transliterations |
-| 📋 Health Records | Patient medical history — JWT protected, role-aware access |
-| 🌐 Multilingual | Accepts symptoms in English, Hindi (`bukhar`, `sardard`) and Punjabi |
+| 🌐 **Multi-language UI** | English, Hindi (हिंदी), Punjabi (ਪੰਜਾਬੀ) — switches live without page reload |
+| 🩺 **AI Symptom Checker** | Rule-based triage engine with ICD-10 codes, urgency levels (CRITICAL / HIGH / MEDIUM / LOW), red flags, and specialist recommendations. Accepts Hindi/Punjabi transliterations. |
+| 👨‍⚕️ **Doctor Directory** | Browse doctors, filter by specialisation or availability, view languages spoken and schedule |
+| 📅 **Appointment Booking** | Date picker → available slot grid → confirm in-person or video consult. Duplicate-slot prevention built in. |
+| 💊 **Medicine Finder** | Search by brand or generic name. See which pharmacies have stock and at what price. |
+| 🏪 **Pharmacy Stock** | View live stock levels per pharmacy. Low-stock and out-of-stock alerts shown. |
+| 📋 **Health Records** | Patients view their own consultation history, lab reports, diagnoses, and prescriptions (JWT-protected). |
+| 🔐 **Auth** | JWT login/register, bcrypt password hashing, 48-hour token expiry. Language preference saved per user. |
 
 ---
 
-## Project Structure
+## 🗂️ Project Structure
 
 ```
 nabhahealth/
-│
-├── app.py                   # App factory, blueprint registration, frontend serving
+├── app.py                  # Flask entry point — DB schema, seed data, all routes
 ├── requirements.txt
-├── README.md
 │
 ├── models/
-│   ├── db.py                # SQLAlchemy instance (db = SQLAlchemy())
-│   └── models.py            # ORM models: User, DoctorProfile, Appointment,
-│                            #   HealthRecord, Pharmacy, Medicine, MedicineStock
+│   ├── db.py               # SQLAlchemy instance
+│   └── models.py           # ORM models (users, doctors, appointments, …)
 │
-├── routes/                  # Flask blueprints (one file per domain)
-│   ├── auth.py              # POST /api/auth/register, /login, GET /me
-│   ├── doctors.py           # GET /api/doctors, /specialisations, /<id>/availability
-│   ├── appointments.py      # POST/GET /api/appointments, /slots, /cancel, /complete
-│   ├── medicines.py         # GET /api/medicines, /search, /categories; POST /update-stock
-│   ├── pharmacy.py          # GET /api/pharmacy, /<id>/stock
-│   ├── records.py           # GET/POST /api/records/<patient_id>, /sync, /delete
-│   └── symptoms.py          # POST /api/symptom-check
+├── routes/                 # API blueprints (modular version)
+│   ├── auth.py
+│   ├── doctors.py
+│   ├── appointments.py
+│   ├── medicines.py
+│   ├── pharmacy.py
+│   ├── records.py
+│   └── symptoms.py
 │
 ├── ai/
-│   └── symptom_checker.py   # Offline rule-based triage engine + synonym normaliser
+│   └── symptom_checker.py  # Rule-based triage + synonym normalisation (en/hi/pa)
 │
 ├── services/
-│   └── seeder.py            # Seeds 11 doctors, 6 pharmacies, 20 medicines on first run
+│   └── seeder.py           # DB seed data helper
 │
-└── static/                  # Frontend (served by Flask at /)
-    ├── index.html           # Single-page app
-    ├── css/style.css
-    └── js/app.js
+└── static/
+    ├── index.html          # Single-page frontend shell
+    ├── css/
+    │   └── style.css
+    ├── js/
+    │   └── app.js          # Frontend logic + i18n engine
+    └── locales/            # Translation files (add to enable multi-language)
+        ├── en.json
+        ├── hi.json
+        └── pa.json
 ```
 
 ---
 
-## Getting Started
+## 🌐 i18n (Multi-language Support)
 
-### 1. Clone / unzip the project
+The frontend includes a lightweight i18n engine in `static/js/app.js`.
 
-```bash
-cd nabhahealth
+- Language is auto-detected from the user's saved preference → browser locale → defaults to `en`
+- Switching language reloads all UI strings instantly (no page refresh)
+- User's language preference is saved to `localStorage` and to their account on login
+- Fonts switch automatically: Noto Sans Devanagari for Hindi, Noto Sans Gurmukhi for Punjabi
+
+**To add or edit translations**, edit the files in `static/locales/`:
+
+```
+static/locales/en.json   ← English (default)
+static/locales/hi.json   ← Hindi
+static/locales/pa.json   ← Punjabi
 ```
 
-### 2. Create a virtual environment (recommended)
-
-```bash
-python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
+Each file uses dot-path keys:
+```json
+{
+  "nav": { "doctors": "Doctors" },
+  "appointments": { "booked_success": "Appointment booked!" }
+}
 ```
-
-### 3. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Run the server
-
-```bash
-python app.py
-```
-
-The server starts at **http://127.0.0.1:5000**.  
-The database (`nabhahealth.db`) is created and seeded automatically on first run.
-
-### 5. Open the app
-
-Navigate to **http://127.0.0.1:5000** in your browser.
 
 ---
 
-## Demo Credentials
+## 🔌 API Reference
 
-| Role    | Phone        | Password  | Notes |
-|---------|--------------|-----------|-------|
-| Patient | `9876543210` | `demo1234`| Village: Sehna |
-| Admin   | `9999999999` | `demo1234`| Full access |
-| Doctor  | `9876510000` | `demo1234`| Dr. Gurpreet Singh — General Physician |
-| Doctor  | `9876510001` | `demo1234`| Dr. Amrita Sharma — Gynaecologist |
-| Doctor  | `9876510002` | `demo1234`| Dr. Ravinder Kumar — Paediatrician |
-
-> All 11 seeded doctors use the same password `demo1234`. Phones run from `9876510000` to `9876510010`.
-
----
-
-## API Reference
-
-All API routes are prefixed with `/api`. Endpoints marked 🔒 require a `Bearer` JWT token in the `Authorization` header.
+All JSON. Auth-required endpoints need `Authorization: Bearer <token>` header.
 
 ### Auth
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/api/auth/register` | — | Register new patient |
+| POST | `/api/auth/login` | — | Login, returns JWT token |
+| GET  | `/api/auth/me` | ✅ | Get current user profile |
 
-| Method | Endpoint | Auth | Body / Params | Description |
-|--------|----------|------|--------------|-------------|
-| `POST` | `/api/auth/register` | — | `name, phone, password, [email, village, language, role]` | Register new user |
-| `POST` | `/api/auth/login` | — | `phone, password` | Login, returns JWT token |
-| `GET`  | `/api/auth/me` | 🔒 | — | Get current user's profile |
-
-**Register / Login response:**
+**Register payload:**
 ```json
-{
-  "token": "<jwt>",
-  "user": { "id": 1, "name": "Harpreet Singh", "phone": "9876543210", "role": "patient", "village": "Sehna" }
-}
+{ "name": "Gurpreet", "phone": "9876500000", "password": "secret", "village": "Nabha", "language": "pa" }
 ```
-
----
 
 ### Doctors
-
-| Method | Endpoint | Auth | Params | Description |
-|--------|----------|------|--------|-------------|
-| `GET`  | `/api/doctors` | — | `?available=true`, `?specialisation=`, `?language=` | List all doctors |
-| `GET`  | `/api/doctors/specialisations` | — | — | List of distinct specialisations |
-| `GET`  | `/api/doctors/<id>` | — | — | Doctor detail + today's slot count |
-| `PUT`  | `/api/doctors/<id>/availability` | 🔒 | `{ "is_available": true }` | Toggle availability (doctor only) |
-
----
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/doctors` | — | List doctors. Query: `?available=true`, `?specialisation=Cardiologist` |
+| GET | `/api/doctors/specialisations` | — | List all unique specialisations |
+| GET | `/api/doctors/<id>` | — | Get single doctor |
 
 ### Appointments
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET  | `/api/appointments/slots` | ✅ | Available slots. Query: `?doctor_id=1&date=2025-06-01` |
+| POST | `/api/appointments` | ✅ | Book an appointment |
+| GET  | `/api/appointments` | ✅ | List my appointments. Query: `?status=booked` |
+| PUT  | `/api/appointments/<id>/cancel` | ✅ | Cancel an appointment |
 
-| Method | Endpoint | Auth | Params / Body | Description |
-|--------|----------|------|--------------|-------------|
-| `GET`  | `/api/appointments/slots` | 🔒 | `?doctor_id=&date=YYYY-MM-DD` | Available time slots |
-| `POST` | `/api/appointments` | 🔒 | `doctor_id, scheduled_at, [mode, notes]` | Book appointment |
-| `GET`  | `/api/appointments` | 🔒 | `?status=booked\|completed\|cancelled` | My appointments |
-| `GET`  | `/api/appointments/<id>` | 🔒 | — | Single appointment detail |
-| `PUT`  | `/api/appointments/<id>/cancel` | 🔒 | — | Cancel an appointment |
-| `PUT`  | `/api/appointments/<id>/complete` | 🔒 | `{ "prescription": "..." }` | Mark complete (doctor only) |
-
-**Slots response:**
+**Book payload:**
 ```json
-{
-  "date": "2025-06-15",
-  "doctor_id": 1,
-  "slots": [
-    { "time": "09:00", "available": true },
-    { "time": "09:15", "available": false }
-  ]
-}
+{ "doctor_id": 1, "scheduled_at": "2025-06-01T10:00:00", "mode": "in_person", "notes": "Fever since 2 days" }
 ```
-
----
 
 ### Medicines
-
-| Method | Endpoint | Auth | Params / Body | Description |
-|--------|----------|------|--------------|-------------|
-| `GET`  | `/api/medicines` | — | `?category=`, `?pharmacy=<id>` | List medicines with stock info |
-| `GET`  | `/api/medicines/search` | — | `?q=<name>` (min 2 chars) | Search by brand or generic name |
-| `GET`  | `/api/medicines/categories` | — | — | List distinct categories |
-| `POST` | `/api/medicines/update-stock` | 🔒 | `pharmacy_id, medicine_id, quantity, [unit_price]` | Update stock (pharmacy/admin only) |
-
----
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/medicines` | — | List medicines. Query: `?category=Antibiotic` |
+| GET | `/api/medicines/search?q=para` | — | Search by name or generic (min 2 chars) |
 
 ### Pharmacy
-
-| Method | Endpoint | Auth | Params | Description |
-|--------|----------|------|--------|-------------|
-| `GET`  | `/api/pharmacy` | — | `?village=` | List pharmacies |
-| `GET`  | `/api/pharmacy/<id>/stock` | — | — | Full stock list with low/out-of-stock alerts |
-
-**Stock response:**
-```json
-{
-  "pharmacy": { "id": 1, "name": "Nabha Civil Hospital Pharmacy", ... },
-  "stock": [ { "medicine_name": "Paracetamol 500mg", "quantity": 500, "unit_price": 2.5 } ],
-  "low_stock": [],
-  "out_of_stock": []
-}
-```
-
----
-
-### Health Records
-
-| Method | Endpoint | Auth | Params / Body | Description |
-|--------|----------|------|--------------|-------------|
-| `GET`  | `/api/records/<patient_id>` | 🔒 | `?type=consultation\|lab\|vaccination` | Get patient records |
-| `POST` | `/api/records/<patient_id>` | 🔒 | `title, [record_type, description, diagnosis, medications]` | Add a record |
-| `PUT`  | `/api/records/<patient_id>/sync` | 🔒 | `{ "records": [...] }` | Batch sync offline records |
-| `DELETE` | `/api/records/<record_id>/delete` | 🔒 | — | Delete a record (patient or admin) |
-
----
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/pharmacy` | — | List pharmacies. Query: `?village=Nabha` |
+| GET | `/api/pharmacy/<id>/stock` | — | Stock for a pharmacy (includes low/out-of-stock alerts) |
 
 ### Symptom Checker
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/api/symptom-check` | — | Triage symptoms |
 
-| Method | Endpoint | Auth | Body | Description |
-|--------|----------|------|------|-------------|
-| `POST` | `/api/symptom-check` | — | `{ "symptoms": ["fever", "bukhar", "sardard"] }` | AI triage |
-
+**Payload:**
+```json
+{ "symptoms": ["chest pain", "sweating"] }
+```
 **Response:**
 ```json
 {
-  "urgency": "HIGH",
-  "specialist": "General Physician / Infectious Disease",
-  "advice": "Could be dengue, malaria or typhoid. Visit hospital within 24 hours.",
-  "red_flags": ["Dengue", "Malaria", "Typhoid"],
-  "icd10": "A90 / B50",
-  "matched_symptoms": ["fever", "body pain", "headache"],
-  "disclaimer": "This is AI-assisted triage only — NOT a medical diagnosis."
+  "urgency": "CRITICAL",
+  "specialist": "Cardiologist",
+  "advice": "Call emergency services immediately.",
+  "icd10": "I20-I25",
+  "red_flags": ["Breathlessness", "Pain radiating to arm"],
+  "matched_symptoms": ["chest pain", "sweating"]
 }
 ```
 
+### Health Records
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET  | `/api/records/<patient_id>` | ✅ | Get patient records. Query: `?type=lab_report` |
+| POST | `/api/records` | ✅ | Create a new health record |
+
 ---
 
-## Symptom Checker
+## 🗄️ Database Schema
 
-The triage engine (`ai/symptom_checker.py`) works **fully offline** — no external API calls.
+SQLite · 7 tables · WAL mode · Foreign keys ON
 
-**How it works:**
+| Table | Purpose |
+|---|---|
+| `users` | Patients, doctors, admins |
+| `doctors` | Doctor profiles linked to users |
+| `appointments` | Bookings with status tracking |
+| `medicines` | Medicine catalogue |
+| `pharmacies` | Pharmacy locations with GPS coords |
+| `pharmacy_stock` | Stock levels and prices per pharmacy |
+| `health_records` | Consultation notes, lab reports, diagnoses |
+| `symptom_rules` | Triage rules with keywords, urgency, ICD-10 |
 
-1. Each input symptom string is normalised through a **synonym map** that covers common Hindi and Punjabi transliterations (`bukhar` → `fever`, `sardard` → `headache`, `seene mein dard` → `chest pain`, etc.)
-2. Normalised symptoms are matched against a **rule set** using `match_all` (all must match) or `match_any` (any one matches) logic
+---
+
+## 🩺 Symptom Checker — How It Works
+
+1. Input symptoms are lowercased and matched against a **synonym map** covering English, Hindi, and Punjabi transliterations (e.g. `"bukhar"` → `fever`, `"seene mein dard"` → `chest pain`)
+2. Normalised symptoms are matched against `symptom_rules` in the database (keyword list per rule)
 3. The **highest-urgency** matching rule wins
-4. Returns urgency level, recommended specialist, advice, ICD-10 code, and red flag warnings
+4. Returns: urgency level · recommended specialist · plain-language advice · ICD-10 code · red flag warnings
 
-**Urgency levels:** `CRITICAL` → `HIGH` → `MODERATE` → `LOW`
-
-**Example inputs that work:**
-```
-"bukhar", "sardard", "khansi"          # Hindi/Punjabi
-"fever", "headache", "body pain"       # English
-"seene mein dard", "saans nahi"        # Hindi phrases
-```
+Urgency levels: `CRITICAL` → `HIGH` → `MEDIUM` → `LOW`
 
 ---
 
-## Database Models
+## ⚙️ Configuration
 
-```
-User ──────────────┬── DoctorProfile (one-to-one)
-                   ├── Appointment (as patient, many)
-                   ├── Appointment (as doctor, many)
-                   ├── HealthRecord (as patient, many)
-                   └── HealthRecord (as doctor, many)
-
-Pharmacy ──────────── MedicineStock (many)
-Medicine ──────────── MedicineStock (many)
-```
-
-User roles: `patient` · `doctor` · `pharmacy` · `admin`
-
----
-
-## Configuration
-
-All config lives in `app.py` inside `create_app()`. Override with environment variables:
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DATABASE_URL` | `sqlite:///nabhahealth.db` | SQLAlchemy DB URI |
-| `JWT_SECRET` | `nabha-secret-change-in-prod` | JWT signing key — **change in production** |
-
-**Example for production:**
-```bash
-export DATABASE_URL="postgresql://user:pass@localhost/nabhahealth"
-export JWT_SECRET="your-very-long-random-secret"
-python app.py
-```
-
----
-
-## Known Issues & Fixes
-
-### 1. `/api/doctors/specialisations` returns 404
-The `/specialisations` route must be defined **before** `/<int:doctor_id>` in `doctors.py`, otherwise Flask matches the word `specialisations` as a doctor ID integer and raises a 404.
-
-**Fix:** Move the `list_specialisations` function above `get_doctor` in `routes/doctors.py`.
-
-### 2. Slot date filtering (SQLAlchemy 2.x)
-`db.func.date(Appointment.scheduled_at) == target_date` may behave unexpectedly outside SQLite. Replace with:
+All config is at the top of `app.py`:
 
 ```python
-from datetime import datetime, date as date_type
-Appointment.scheduled_at >= datetime.combine(target_date, datetime.min.time()),
-Appointment.scheduled_at <  datetime.combine(target_date, datetime.max.time()),
+SECRET_KEY = secrets.token_hex(32)   # Rotates on restart — set via env var in production
+DB_PATH    = "nabhahealth.db"        # SQLite file path
+JWT_EXP_H  = 48                      # Token validity in hours
 ```
 
-### 3. SQLAlchemy 2.x deprecation warning
-`User.query.get(uid)` is deprecated. Replace with:
+**For production**, replace `SECRET_KEY` with a stable environment variable:
 ```python
-db.session.get(User, uid)
+SECRET_KEY = os.environ.get("SECRET_KEY", secrets.token_hex(32))
 ```
 
-### 4. Email unique constraint with NULL values
-`email` has `unique=True` but most seeded users have no email. SQLite allows multiple NULLs in unique columns, but PostgreSQL does not. If migrating to PostgreSQL, remove `unique=True` from the `email` column or use a partial index.
+---
+
+## 📦 Dependencies
+
+```
+flask>=3.0
+flask-cors>=4.0
+flask-sqlalchemy>=3.1
+flask-jwt-extended>=4.6
+bcrypt>=4.1
+PyJWT
+werkzeug
+```
+
+Install: `pip install -r requirements.txt`
 
 ---
 
-## Tech Stack
+## 🛠️ Development Notes
 
-| Layer | Technology |
-|-------|-----------|
-| Backend | Python 3.10+ · Flask 3.x |
-| ORM | Flask-SQLAlchemy 3.x |
-| Auth | Flask-JWT-Extended · bcrypt |
-| Database | SQLite (dev) · PostgreSQL-compatible |
-| Frontend | Vanilla HTML · CSS · JavaScript (no build step) |
-| AI/ML | Rule-based engine (no external API, works offline) |
-| CORS | Flask-CORS |
+- **No build step** — plain HTML/CSS/JS, no bundler needed
+- **Offline-capable** — symptom checker works with no internet after first boot
+- **Low-bandwidth optimised** — minimal dependencies, small payloads
+- **Single-file backend** — entire Flask app runs from `app.py` for easy deployment
+- **SQLite** — no database server needed; suitable for village-level deployments
 
 ---
+
+## 📄 License
+
+Built for rural healthcare access in Punjab, India.  
+Contact: admin@nabha.health
 
 ## 🤝 Contributing
 
 We welcome contributions! Please read [CONTRIBUTING.md](docs/contributing.md) and open a PR.
-
-```bash
-git checkout -b feature/your-feature
-git commit -m "feat: add your feature"
-git push origin feature/your-feature
-```
-
